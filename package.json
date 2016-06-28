@@ -1,0 +1,25 @@
+{
+  "name": "mock-steelpenny",
+  "version": "1.0.0",
+  "description": "A mock COINS steelpenny server, specifically for mocking authentication.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swashcap/mock-steelpenny.git"
+  },
+  "keywords": [
+    "coins",
+    "steelpenny",
+    "mock",
+    "api"
+  ],
+  "author": "Cory Reed <swashcap@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swashcap/mock-steelpenny/issues"
+  },
+  "homepage": "https://github.com/swashcap/mock-steelpenny#readme"
+}
