@@ -30,7 +30,7 @@ function getApiResponse(body) {
           username,
           user: {
             username,
-            label: 'Test User',
+            label: username,
             activeFlag: 'Y',
             acctExpDate: '2017-06-09T06:00:00.000Z',
             passwordExpDate: '2016-12-07T07:00:00.000Z',
