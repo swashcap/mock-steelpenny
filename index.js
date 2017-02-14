@@ -9,7 +9,14 @@ function errorHandler(error) {
   process.exit(1);
 }
 
-function getApiResponse(body) {
+/**
+ * @param {Object} request
+ * @param {string} request.body
+ * @param {string} request.url
+ * @param {string} request.method
+ * @returns {Object}
+ */
+function getApiResponse({ body, method, url }) {
   try {
     const parsed = JSON.parse(body);
 
@@ -24,7 +31,7 @@ function getApiResponse(body) {
       throw new Error('username required');
     }
 
-    return {
+    const response = {
       body: {
         data: [{
           username,
@@ -44,13 +51,19 @@ function getApiResponse(body) {
           algorithm: 'sha256',
           issueTime: Date.now(),
           expireTime: Date.now() + 24 * 60 * 60,
-          studyRoles: {}
+          studyRoles: {},
         }],
         error: null,
         stats: {}
       },
       statusCode: 201,
     };
+
+    if (parsed.coinstac) {
+      response.body.data[0].coinstac = require('/coins/config/dbmap.json').coinstac;
+    }
+
+    return response;
   } catch (error) {
     return {
       body: {
@@ -65,20 +78,22 @@ function getApiResponse(body) {
 }
 
 function onRequest(request, response) {
-  console.log('Request:', request.method, request.url);
-
+  const { method, url } = request;
   let body = '';
+
+  console.log('Request:', method, url);
 
   request.on('readable', () => {
     const chunk = request.read();
 
     if (chunk === null) {
-      const apiResponse = getApiResponse(body);
+      const {
+        body: responseBody,
+        statusCode,
+      } = getApiResponse({ body, method, url });
 
-      response.writeHead(apiResponse.statusCode, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(apiResponse.body));
+      response.writeHead(statusCode, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify(responseBody));
     } else {
       body += chunk.toString();
     }
