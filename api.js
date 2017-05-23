@@ -62,7 +62,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(formatResponse('Clear for takeoff'))
     },
     method: 'OPTIONS',
     path: '/auth/keys/{id}'
@@ -83,7 +83,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(formatResponse(''))
     },
     method: 'DELETE',
     path: '/auth/keys/{id}'
@@ -91,7 +91,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(formatResponse('email sent')).code(202)
     },
     method: 'POST',
     path: '/auth/reset-request'
@@ -99,7 +99,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(formatResponse('password reset')).code(201)
     },
     method: 'POST',
     path: '/auth/reset'
