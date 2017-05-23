@@ -2,6 +2,7 @@
 
 const atob = require('atob')
 const coinstacConfig = require('/coins/config/dbmap.json').coinstac
+const moment = require('moment')
 
 const getUserResponse = (username, coinstac = false) => {
   const response = {
@@ -12,14 +13,14 @@ const getUserResponse = (username, coinstac = false) => {
     key: 'b09945f7-b768-47ee-b003-59e0a1b5c76a',
     studyRoles: {},
     user: {
-      acctExpDate: '2017-06-09T06:00:00.000Z',
+      acctExpDate: moment().add(1, 'year').format(),
       activeFlag: 'Y',
-      dateAdded: '2017-06-09T06:00:00.000Z',
+      dateAdded: moment().format(),
       email: 'nidev@mrn.org',
       emailUnsubscribed: false,
       isSiteAdmin: 'Y',
       label: username,
-      passwordExpDate: '2016-12-07T07:00:00.000Z',
+      passwordExpDate: moment().add(1, 'year').format(),
       passwordResetExpiration: null, // TODO: populate
       passwordResetKey: null,
       passwordResetSessionId: null, // TODO: populate
