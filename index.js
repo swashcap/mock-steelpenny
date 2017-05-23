@@ -16,7 +16,13 @@ const register = pify(server.register.bind(server))
 
 server.connection({
   host: 'localhost',
-  port: 8800
+  port: 8800,
+  routes: {
+    cors: {
+      credentials: true,
+      origin: ['*']
+    }
+  }
 })
 
 register({
