@@ -123,6 +123,26 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
+      reply(formatResponse({
+        assessments: 648927,
+        dxAsmts: 103669,
+        dxParentStudies: 9,
+        dxScans: 4679,
+        dxStudies: 15,
+        dxSubjects: 4801,
+        instruments: 3135,
+        participants: 45923,
+        scans: 47892,
+        studies: 661,
+        uniqueParticipantEnrollments: 66858
+      }))
+    },
+    method: 'GET',
+    path: '/statistics'
+  })
+
+  server.route({
+    handler (request, reply) {
       return reply('Not implemented').code(501)
     },
     method: 'GET',
