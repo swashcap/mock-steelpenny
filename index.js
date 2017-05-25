@@ -1,5 +1,6 @@
 'use strict'
 
+const { cookieName } = require('coins-deposit-box')
 const good = require('good')
 const hapi = require('hapi')
 const pify = require('pify')
@@ -23,6 +24,12 @@ server.connection({
       origin: ['*']
     }
   }
+})
+
+server.state(cookieName, {
+  isSecure: false,
+  path: '/',
+  ttl: 24 * 60 * 60 * 1000
 })
 
 register({

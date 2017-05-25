@@ -1,5 +1,6 @@
 'use strict'
 
+const { cookieName } = require('coins-deposit-box')
 const atob = require('atob')
 const coinstacConfig = require('/coins/config/dbmap.json').coinstac
 const moment = require('moment')
@@ -75,6 +76,7 @@ module.exports.register = (server, options, next) => {
       return reply(
         formatResponse(getUserResponse(atob(username), coinstac))
       )
+        .state(cookieName, 'test-cookie-value')
         .code(201)
     },
     method: 'POST',
