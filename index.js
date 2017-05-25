@@ -27,9 +27,11 @@ server.connection({
 })
 
 server.state(cookieName, {
+  domain: 'localhost',
+  isHttpOnly: false,
+  isSameSite: false,
   isSecure: false,
-  path: '/',
-  ttl: 24 * 60 * 60 * 1000
+  path: '/'
 })
 
 register({
