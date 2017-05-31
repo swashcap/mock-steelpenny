@@ -55,7 +55,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(formatResponse('test-next-jwt'))
     },
     method: 'GET',
     path: '/auth/cookies/{id}'
