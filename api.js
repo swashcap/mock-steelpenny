@@ -109,15 +109,23 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      reply(formatResponse({
+      reply(formatResponse([{
         description: 'Test site',
         label: 'testsite',
         siteConfig: {
           administratorContact: 'test@test.world',
           expirationEmailMessage: 'Sample expiration message'
         },
-        siteId: 100
-      }))
+        siteId: '100'
+      }, {
+        description: 'Mind Research Network',
+        label: 'MRN',
+        siteConfig: {
+          administratorContact: 'nidev@mrn.org',
+          expirationEmailMessage: null
+        },
+        siteId: '7'
+      }]))
     },
     method: 'GET',
     path: '/sites'
