@@ -5,6 +5,40 @@ const atob = require('atob')
 const coinstacConfig = require('/coins/config/dbmap.json').coinstac
 const moment = require('moment')
 
+const getSite = (siteId, withRelated = false) => {
+  let site
+
+  if (siteId === 7) {
+    site = {
+      description: 'Mind Research Network',
+      label: 'MRN',
+      siteId: '7'
+    }
+
+    if (withRelated) {
+      site.siteConfig = {
+        administratorContact: 'nidev@mrn.org',
+        expirationEmailMessage: null
+      }
+    }
+  } else {
+    site = {
+      description: 'Test site',
+      label: 'testsite',
+      siteId: siteId.toString()
+    }
+
+    if (withRelated) {
+      site.siteConfig = {
+        administratorContact: 'test@test.world',
+        expirationEmailMessage: 'Sample expiration message'
+      }
+    }
+  }
+
+  return site
+}
+
 const getUserResponse = (username, coinstac = false) => {
   const response = {
     algorithm: 'sha256',
@@ -41,6 +75,17 @@ const getUserResponse = (username, coinstac = false) => {
 const formatResponse = response => ({
   data: Array.isArray(response) ? response : [response],
   error: null,
+  stats: {}
+})
+
+const formatError = (message, code) => ({
+  data: [],
+  error: {
+    statusCode: code,
+    error: 'Error',
+    debugData: {},
+    message
+  },
   stats: {}
 })
 
@@ -108,24 +153,21 @@ module.exports.register = (server, options, next) => {
   })
 
   server.route({
-    handler (request, reply) {
-      reply(formatResponse([{
-        description: 'Test site',
-        label: 'testsite',
-        siteConfig: {
-          administratorContact: 'test@test.world',
-          expirationEmailMessage: 'Sample expiration message'
-        },
-        siteId: '100'
-      }, {
-        description: 'Mind Research Network',
-        label: 'MRN',
-        siteConfig: {
-          administratorContact: 'nidev@mrn.org',
-          expirationEmailMessage: null
-        },
-        siteId: '7'
-      }]))
+    handler ({ query }, reply) {
+      const siteId = query.siteId ? parseInt(query.siteId, 10) : undefined
+      const withRelated = !!query.withRelated
+
+      if (siteId !== undefined) {
+        if (Number.isNaN(siteId) || siteId != query.siteId) { // eslint-disable-line
+          return reply(formatError('bad siteId', 422)).code(422)
+        }
+
+        return reply(formatResponse(getSite(siteId, withRelated)))
+      }
+
+      return reply(formatResponse(
+        [7, 8, 9].map(siteId => getSite(siteId, withRelated))
+      ))
     },
     method: 'GET',
     path: '/sites'
