@@ -4,7 +4,7 @@ module.exports.register = (server, options, next) => {
     if (request.response.isBoom) {
       return reply({
         data: null,
-        error: Object.assign({}, request.response.payload, {
+        error: Object.assign({}, request.response.output.payload, {
           debugData: request.response.data
         }),
         stats: {}
