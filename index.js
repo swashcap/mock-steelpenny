@@ -6,6 +6,7 @@ const hapi = require('hapi')
 const pify = require('pify')
 
 const api = require('./api.js')
+const formatResponse = require('./format-response.js')
 
 const server = new hapi.Server({
   debug: {
@@ -48,6 +49,7 @@ register({
     }
   }
 })
+  .then(() => register({ register: formatResponse }))
   .then(() => register(
     { register: api },
     {

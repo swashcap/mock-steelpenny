@@ -2,6 +2,7 @@
 
 const { cookieName } = require('coins-deposit-box')
 const atob = require('atob')
+const boom = require('boom')
 const coinstacConfig = require('/coins/config/dbmap.json').coinstac
 const moment = require('moment')
 
@@ -72,27 +73,10 @@ const getUserResponse = (username, coinstac = false) => {
   return response
 }
 
-const formatResponse = response => ({
-  data: Array.isArray(response) ? response : [response],
-  error: null,
-  stats: {}
-})
-
-const formatError = (message, code) => ({
-  data: [],
-  error: {
-    statusCode: code,
-    error: 'Error',
-    debugData: {},
-    message
-  },
-  stats: {}
-})
-
 module.exports.register = (server, options, next) => {
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(boom.notImplemented('Not implemented'))
     },
     method: 'GET',
     path: '/'
@@ -100,7 +84,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply(formatResponse('test-next-jwt'))
+      return reply('test-next-jwt')
     },
     method: 'GET',
     path: '/auth/cookies/{id}'
@@ -108,7 +92,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply(formatResponse('Clear for takeoff'))
+      return reply('Clear for takeoff')
     },
     method: 'OPTIONS',
     path: '/auth/keys/{id}'
@@ -119,7 +103,7 @@ module.exports.register = (server, options, next) => {
       const { payload: { coinstac, username } } = request
 
       return reply(
-        formatResponse(getUserResponse(atob(username), coinstac))
+        getUserResponse(atob(username), coinstac)
       )
         .state(cookieName, 'test-cookie-value')
         .code(201)
@@ -130,7 +114,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply(formatResponse(''))
+      return reply('')
     },
     method: 'DELETE',
     path: '/auth/keys/{id}'
@@ -138,7 +122,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply(formatResponse('email sent')).code(202)
+      return reply('email sent').code(202)
     },
     method: 'POST',
     path: '/auth/reset-request'
@@ -146,7 +130,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply(formatResponse('password reset')).code(201)
+      return reply('password reset').code(201)
     },
     method: 'POST',
     path: '/auth/reset'
@@ -159,15 +143,15 @@ module.exports.register = (server, options, next) => {
 
       if (siteId !== undefined) {
         if (Number.isNaN(siteId) || siteId != query.siteId) { // eslint-disable-line
-          return reply(formatError('bad siteId', 422)).code(422)
+          return reply(boom.badData('bad siteId'))
         }
 
-        return reply(formatResponse(getSite(siteId, withRelated)))
+        return reply(getSite(siteId, withRelated))
       }
 
-      return reply(formatResponse(
+      return reply(
         [7, 8, 9].map(siteId => getSite(siteId, withRelated))
-      ))
+      )
     },
     method: 'GET',
     path: '/sites'
@@ -175,7 +159,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      reply(formatResponse({
+      reply({
         assessments: 648927,
         dxAsmts: 103669,
         dxParentStudies: 9,
@@ -187,7 +171,7 @@ module.exports.register = (server, options, next) => {
         scans: 47892,
         studies: 661,
         uniqueParticipantEnrollments: 66858
-      }))
+      })
     },
     method: 'GET',
     path: '/statistics'
@@ -195,7 +179,7 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('Not implemented').code(501)
+      return reply(boom.notImplemented())
     },
     method: 'GET',
     path: '/users/check'
@@ -206,7 +190,7 @@ module.exports.register = (server, options, next) => {
       const { payload: { username } } = request
 
       return reply(
-        formatResponse(getUserResponse(atob(username)).user)
+        getUserResponse(atob(username)).user
       )
         .code(201)
     },
