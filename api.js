@@ -100,10 +100,20 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      const { payload: { coinstac, username } } = request
+      const { payload } = request
+      const password = atob(payload.password)
+      const username = atob(payload.username)
+
+      if (
+        !password ||
+        !username ||
+        !(username.indexOf('demo') === 0 || username === 'mochatest')
+      ) {
+        return reply(boom.unauthorized('Unknown username and password'))
+      }
 
       return reply(
-        getUserResponse(atob(username), coinstac)
+        getUserResponse(atob(username), payload.coinstac)
       )
         .state(cookieName, 'test-cookie-value')
         .code(201)
