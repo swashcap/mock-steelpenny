@@ -152,9 +152,11 @@ module.exports.register = (server, options, next) => {
       const withRelated = !!query.withRelated
 
       if (siteId !== undefined) {
-        if (Number.isNaN(siteId) || siteId != query.siteId) { // eslint-disable-line
+        /* eslint-disable eqeqeq */
+        if (Number.isNaN(siteId) || siteId != query.siteId || siteId > 120) {
           return reply(boom.badData('bad siteId'))
         }
+        /* eslint-enable eqeqeq */
 
         return reply(getSite(siteId, withRelated))
       }
