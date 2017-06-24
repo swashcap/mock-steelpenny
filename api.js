@@ -113,7 +113,7 @@ module.exports.register = (server, options, next) => {
       }
 
       return reply(
-        getUserResponse(atob(username), payload.coinstac)
+        getUserResponse(username, payload.coinstac)
       )
         .state(cookieName, 'test-cookie-value')
         .code(201)
