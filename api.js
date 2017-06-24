@@ -107,7 +107,7 @@ module.exports.register = (server, options, next) => {
       if (
         !password ||
         !username ||
-        !(username.indexOf('demo') === 0 || username === 'mochatest')
+        !(username.indexOf('demo') === 0 || username.indexOf('test') === 0)
       ) {
         return reply(boom.unauthorized('Unknown username and password'))
       }
