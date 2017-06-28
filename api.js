@@ -6,6 +6,21 @@ const boom = require('boom')
 const coinstacConfig = require('/coins/config/dbmap.json').coinstac
 const moment = require('moment')
 
+/**
+ * Store valid authentications as a collection of `RegExp`s, where the first is
+ * a valid username username and the second is a valid password pattern:
+ *
+ *   [
+ *     [<username 1 pattern>, <password 1 pattern>],
+ *     [<username 2 pattern>, <password 2 pattern>],
+ *     // ...
+ *   ]
+ */
+const validAuthentications = [
+  [/^demo.*/, /.*/],
+  [/^mochatest$/, /^mochapassword/]
+]
+
 const getSite = (siteId, withRelated = false) => {
   let site
 
@@ -107,7 +122,9 @@ module.exports.register = (server, options, next) => {
       if (
         !password ||
         !username ||
-        !(username.indexOf('demo') === 0 || username.indexOf('test') > -1)
+        !validAuthentications.some(
+          ([userPatt, passPatt]) => userPatt.test(username) && passPatt.test(password)
+        )
       ) {
         return reply(boom.unauthorized('Unknown username and password'))
       }
@@ -198,13 +215,16 @@ module.exports.register = (server, options, next) => {
   })
 
   server.route({
-    handler (request, reply) {
-      const { payload: { username } } = request
+    handler ({ payload }, reply) {
+      const password = atob(payload.password)
+      const username = atob(payload.username)
 
-      return reply(
-        getUserResponse(atob(username)).user
-      )
-        .code(201)
+      validAuthentications.push([
+        new RegExp(`^${username}$`),
+        new RegExp(`^${password}$`)
+      ])
+
+      return reply(getUserResponse(username).user).code(201)
     },
     method: 'POST',
     path: '/users'
