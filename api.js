@@ -18,7 +18,8 @@ const moment = require('moment')
  */
 const validAuthentications = [
   [/^demo.*/, /.*/],
-  [/^mochatest$/, /^mochapassword/]
+  [/^mochatest$/, /^mochapassword/],
+  [/^(account|password)-will-expire$/, /.*/]
 ]
 
 const getSite = (siteId, withRelated = false) => {
@@ -64,14 +65,18 @@ const getUserResponse = (username, coinstac = false) => {
     key: 'b09945f7-b768-47ee-b003-59e0a1b5c76a',
     studyRoles: {},
     user: {
-      acctExpDate: moment().add(1, 'year').format(),
+      acctExpDate: moment()
+        .add(1, username === 'account-will-expire' ? 'day' : 'year')
+        .format(),
       activeFlag: 'Y',
       dateAdded: moment().format(),
       email: 'nidev@mrn.org',
       emailUnsubscribed: false,
       isSiteAdmin: 'Y',
       label: username,
-      passwordExpDate: moment().add(1, 'year').format(),
+      passwordExpDate: moment()
+        .add(1, username === 'password-will-expire' ? 'day' : 'year')
+        .format(),
       passwordResetExpiration: null, // TODO: populate
       passwordResetKey: null,
       passwordResetSessionId: null, // TODO: populate
@@ -114,12 +119,21 @@ module.exports.register = (server, options, next) => {
   })
 
   server.route({
-    handler (request, reply) {
-      const { payload } = request
-      const password = atob(payload.password)
-      const username = atob(payload.username)
+    handler ({ payload }, reply) {
+      const password = typeof payload.password === 'string'
+        ? atob(payload.password)
+        : ''
+      const username = typeof payload.username === 'string'
+        ? atob(payload.username)
+        : ''
 
-      if (
+      if (username === 'account-expired') {
+        return reply(boom.unauthorized('Account expired'))
+      } else if (username === 'password-expired') {
+        return reply(boom.unauthorized('Password expired'))
+      } else if (username === 'account-deactivated') {
+        return reply(boom.unauthorized('Account deactivated'))
+      } else if (
         !password ||
         !username ||
         !validAuthentications.some(
