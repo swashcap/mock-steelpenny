@@ -79,7 +79,7 @@ const getUserResponse = (username, coinstac = false) => {
         .add(1, username === 'password-will-expire' ? 'day' : 'year')
         .format(),
       passwordResetExpiration: null, // TODO: populate
-      passwordResetKey: null,
+      passwordResetHash: null,
       passwordResetSessionId: null, // TODO: populate
       siteId: '7',
       username
