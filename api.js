@@ -172,7 +172,9 @@ module.exports.register = (server, options, next) => {
 
   server.route({
     handler (request, reply) {
-      return reply('password reset').code(201)
+      return reply(getUserReponse('test', false))
+        .state(cookieName, 'test-cookie-value')
+        .code(201);
     },
     method: 'POST',
     path: '/auth/reset'
