@@ -19,7 +19,8 @@ const moment = require('moment')
 const validAuthentications = [
   [/^demo.*/, /.*/],
   [/^mochatest$/, /^mochapassword/],
-  [/^(account|password)-will-expire$/, /.*/]
+  [/^(account|password)-will-expire$/, /.*/],
+  [/^test$/, /.*/]
 ]
 
 const getSite = (siteId, withRelated = false) => {
